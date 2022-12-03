@@ -1,0 +1,29 @@
+package com.example.demo;
+
+import java.util.List;
+
+import org.apache.tomcat.jni.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class usersController {
+//	@Autowired
+//	private usersService service;
+	 @Autowired
+	 private usersRepository userRepository;
+//	 @GetMapping("/allusers")
+//	 public List<users> list(){
+//			return service.listAll();
+//		}
+	@GetMapping(path="/all")
+	  public @ResponseBody Iterable<users> getAllUsers() {
+	    // This returns a JSON or XML with the users
+	    return userRepository.findAll();
+	  }
+
+}

@@ -1,0 +1,26 @@
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class companyController {
+	@Autowired
+	private companyService service;
+	 @GetMapping("/register")
+	    public String showRegistrationForm(Model model){
+	        // create model object to store form data
+	     company com = new company();
+	        model.addAttribute("company", com);
+	        return "register";
+	    }
+	 
+	@PostMapping("/register/save")
+    public String registration( @Valid @RequestBody company companyDto ){
+                             
+       
+}
+}

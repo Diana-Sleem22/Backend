@@ -1,0 +1,20 @@
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class usersController {
+	@Autowired
+	private usersService service;
+	 @GetMapping("/allusers")
+	    public String showRegistrationForm(Model model){
+	        // create model object to store form data
+	      users user = new users();
+	        model.addAttribute("user", user);
+	        return "register";
+	    }
+}

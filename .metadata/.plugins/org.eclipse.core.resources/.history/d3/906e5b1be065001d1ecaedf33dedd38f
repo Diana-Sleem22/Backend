@@ -1,0 +1,17 @@
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class usersService {
+	@Autowired
+	private usersRepository repo;
+	
+
+    public void saveUser(users userDTO) {
+       users user=new users();
+       user.setName(userDTO.getFirstname(),userDTO.getLastname());
+       user.setEmail(userDTO.getEmail());
+    }
+}

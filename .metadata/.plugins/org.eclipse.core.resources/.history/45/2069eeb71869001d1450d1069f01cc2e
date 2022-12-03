@@ -1,0 +1,55 @@
+package application;
+
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Scanner;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class get {
+	public static void main (String[] args)  throws IOException, ParseException
+	    { 
+		URL url = new URL("http://localhost:8080/hijaziAPI/allusers");
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.connect();
+
+		//Getting the response code
+		int responsecode = conn.getResponseCode();
+		if (responsecode != 200) {
+		    throw new RuntimeException("HttpResponseCode: " + responsecode);
+		} else {
+			 String inline = "";
+			 Scanner scanner = new Scanner(url.openStream());
+			  while (scanner.hasNext()) {
+			       inline += scanner.nextLine();
+			    }
+			  scanner.close();
+			  JSONParser parse = new JSONParser();
+			    JSONObject data_obj = (JSONObject) parse.parse(inline);
+			    JSONObject obj = (JSONObject) data_obj.get("firstname");
+			
+		}
+	
+	    }
+	 
+}

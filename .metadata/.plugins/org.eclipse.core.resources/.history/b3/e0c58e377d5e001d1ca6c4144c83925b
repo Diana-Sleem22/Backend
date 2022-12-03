@@ -1,0 +1,47 @@
+package com.example.demo;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity 
+public class customer {
+
+
+
+private Integer productId;
+private String customerName;
+private Integer phonenumber;
+
+public customer() {
+	
+}
+public customer(int productId, String customerName, int phonenumber) {
+	
+	this.productId = productId;
+	this.customerName = customerName;
+	this.phonenumber = phonenumber;
+}
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+public int getProductId() {
+	return productId;
+}
+public void setProductId(int productId) {
+	this.productId = productId;
+}
+public String getCustomerName() {
+	return customerName;
+}
+public void setCustomerName(String customerName) {
+	this.customerName = customerName;
+}
+public int getPhonenumber() {
+	return phonenumber;
+}
+public void setPhonenumber(int phonenumber) {
+	this.phonenumber = phonenumber;
+}
+
+}

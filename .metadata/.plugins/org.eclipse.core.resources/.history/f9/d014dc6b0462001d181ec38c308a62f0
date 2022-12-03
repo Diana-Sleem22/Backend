@@ -1,0 +1,24 @@
+package com.example.demo;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity 
+public class Products {
+	
+	private Integer id;
+	
+	private String name;
+	private String barcode;
+	private String quantity;
+	private String categoryFK;
+	private String companyFK;
+	private String price;
+
+
+
+	
+}

@@ -1,0 +1,13 @@
+package com.example.demo;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class customerService {
+	@Autowired
+	private customerRepository repo;
+	public List<customer> listAll(){
+		return repo.findAll();
+	}
+}

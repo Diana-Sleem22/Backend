@@ -1,0 +1,34 @@
+package com.example.demo;
+
+public class Products {
+
+	private Integer productId;
+	private String productName;
+
+
+	public Products() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Products(Integer productId, String productName) {
+		super();
+		this.productId = productId;
+		this.productName = productName;
+	}
+
+	public Integer getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+}
