@@ -1,42 +1,34 @@
 package com.example.demo;
 
-import javax.persistence.Column;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.apache.tomcat.util.json.JSONParser;
-
-
 @Entity 
 @Table(name = "products")
-public class Products {
+public class products {
+	public products () {
+		
+	}
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
 	private String barcode;
-	private String quantity;
-	private String categoryFK;
-	private String companyFK;
-	private String price;
-	
-	public Products () {
-		
-	}
+	private Integer quantity;
+	private Integer price;
+	private Integer companyFK;
+	private Integer categoryFK;
 	public Integer getId() {
 		return id;
-
 	}
 	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
 		return name;
-
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -47,37 +39,28 @@ public class Products {
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-	public String getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(String quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	public String getCategoryFK() {
-		return categoryFK;
-	}
-	public void setCategoryFK(String categoryFK) {
-		this.categoryFK = categoryFK;
-	}
-	public String getCompanyFK() {
-		return companyFK;
-	}
-	public void setCompanyFK(String companyFK) {
-		this.companyFK = companyFK;
-	}
-	public String getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	@Override
-	public String toString() {
-		return "Products [id=" + id + ", name=" + name + ", barcode=" + barcode + ", quantity=" + quantity
-				+ ", categoryFK=" + categoryFK + ", companyFK=" + companyFK + ", price=" + price + "]";
+	public Integer getCompanyFK() {
+		return companyFK;
 	}
-
-
-
-	
+	public void setCompanyFK(Integer companyFK) {
+		this.companyFK = companyFK;
+	}
+	public Integer getCategoryFK() {
+		return categoryFK;
+	}
+	public void setCategoryFK(Integer categoryFK) {
+		this.categoryFK = categoryFK;
+	}
 }

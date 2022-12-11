@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,7 @@ public class companyController {
 		return Response.SC_CREATED;
                             
 }
+	
 	@GetMapping("/getAllCompanies")
     public List<company> getCompany(){
 		return repository.findAll();
@@ -43,4 +47,15 @@ public class companyController {
     {  
     repository.deleteById(companyid);  
     }  
+    @GetMapping("/searchCompanies/{name}")
+    public ResponseEntity<List<company>> searchCompanies(@PathVariable("name") String companyName){
+    	 List<company> company = null;
+         if(companyName != null){
+             company= repository.findByNameLike("%"+companyName+"%");
+            
+             return ResponseEntity.ok(company);
+         }
+ 
+         return ResponseEntity.ok(company);
+    }
 }

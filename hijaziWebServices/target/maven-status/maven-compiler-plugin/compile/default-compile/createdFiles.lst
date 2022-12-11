@@ -1,0 +1,5 @@
+com\example\demo\productRepository.class
+com\example\demo\productService.class
+com\example\demo\HijaziWebServicesApplication.class
+com\example\demo\Products.class
+com\example\demo\productController.class

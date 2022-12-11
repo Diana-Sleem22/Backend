@@ -1,0 +1,85 @@
+package com.example.demo;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+import org.apache.catalina.connector.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class userController {
+	@Autowired
+	private userRepository repository;
+
+	 
+	@PostMapping("/registerUser")
+    public int registration(  @RequestBody user userDto ) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException{
+		 String input = userDto.getPassword();
+		    String salt = "12345678";
+
+		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+		    SecretKey key = CommonFunctions.getKeyFromPassword(input,salt);
+		    System.out.println(key);
+		    String algorithm = "AES/CBC/PKCS5Padding";
+
+		    String cipherText = CommonFunctions.encrypt(algorithm,input, key, ivParameterSpec);
+		    if(!userDto.getPassword().equals("null")) {
+			    userDto.setPassword("");
+
+		    }
+		    else {
+			    userDto.setPassword(cipherText);
+
+		    }
+		repository.save(userDto);
+		return Response.SC_CREATED;
+                            
+}
+	 @GetMapping("/loginUser/{email}/{password}")
+	    public int loginUser(@PathVariable("email") String email, @PathVariable("password") String password) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException{
+	    	 List<user> userToLogin;
+	         if(email != null){
+	        	 String salt = "12345678";
+
+	 		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+	 		    SecretKey key = CommonFunctions.getKeyFromPassword(password,salt);
+			    System.out.println(key);
+
+	 		    String algorithm = "AES/CBC/PKCS5Padding";
+			    String cipherText = CommonFunctions.encrypt(algorithm,password, key, ivParameterSpec);
+
+
+	        	 userToLogin = repository.loginUser(email, cipherText);
+	             if(userToLogin.isEmpty()){
+	                 return Response.SC_BAD_REQUEST;
+	             }
+                 return Response.SC_FOUND;
+	         }
+	        
+	 
+             return Response.SC_BAD_REQUEST;
+	    }
+
+}
