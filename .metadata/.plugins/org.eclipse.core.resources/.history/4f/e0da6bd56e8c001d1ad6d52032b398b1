@@ -1,0 +1,8 @@
+package com.example.demo;
+
+public class orderItemsDetails {
+	private Integer quantity;
+	private Integer price;
+	private String name;
+
+}

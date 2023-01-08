@@ -1,0 +1,27 @@
+package com.example.demo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class exchangeRateController {
+	@Autowired
+	private exchangeRateRepository repository;
+	
+	@GetMapping("/getExchangeRate")
+	  public ResponseEntity<List<exchangeRate>>  getExchangeRate(){
+		 List<exchangeRate> rate= new ArrayList<exchangeRate>();
+		rate=repository.getExchangeRate ();
+       
+     return ResponseEntity.ok(rate);
+      
+  
+}
+
+	 
+}

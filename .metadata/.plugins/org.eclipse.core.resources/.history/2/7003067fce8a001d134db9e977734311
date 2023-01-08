@@ -1,0 +1,88 @@
+package com.example.demo;
+
+import java.util.List;
+
+import org.apache.catalina.connector.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+@RestController
+public class productsController {
+	@Autowired
+	private productsRepository repository;
+	
+	@Autowired
+	private productsSuppliersRepository productSuppliersrepository;
+
+	@PostMapping("/registerProduct")
+    public JSONArray registration(  @RequestBody products productsDto ){
+		repository.save(productsDto);
+		JSONObject json = new JSONObject();
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("product", productsDto);
+		JSONArray ja = new JSONArray();
+		ja.add(json);
+		return ja ;
+                            
+}
+	@PostMapping("/registerProductSupplier")
+    public JSONArray registerProductSupplier(  @RequestBody productsSuppliers productsSuppliersDto ){
+		productSuppliersrepository.save(productsSuppliersDto);
+		JSONArray ja = new JSONArray();
+		JSONObject json = new JSONObject();
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("product", productsSuppliersDto);
+		ja.add(json);
+
+		return ja ;
+                            
+}
+	@GetMapping("/getAllProducts")
+    public List<products> getProduct(){
+		return repository.findAll();
+                            
+}
+    @PutMapping("/updateProduct")  
+    private int update(@RequestBody  products productsDto )   
+    {  
+     	repository.save(productsDto);
+		return Response.SC_CREATED; 
+    }  
+    @DeleteMapping("/deleteProduct/{id}")  
+    private void deleteProduct(@PathVariable("id") int productid) 
+    {  
+    repository.deleteById(productid);  
+    }
+    @GetMapping("/searchProducts/{name}")
+    public ResponseEntity<List<products>> searchProducts(@PathVariable("name") String productName){
+    	 List<products> products = null;
+         if(productName != null){
+        	 products= repository.searchProducts("%"+productName+"%");
+            
+             return ResponseEntity.ok(products);
+         }
+ 
+         return ResponseEntity.ok(products);
+    }
+    
+    @GetMapping("/searchProducts/{barcode}")
+    public ResponseEntity<List<products>> searchProductsByBarCode(@PathVariable("barcode") String barcode){
+    	 List<products> products = null;
+         if(barcode != null){
+        	 products= repository.searchProductsByBarCode("%"+barcode+"%");
+            
+             return ResponseEntity.ok(products);
+         }
+ 
+         return ResponseEntity.ok(products);
+    }
+}

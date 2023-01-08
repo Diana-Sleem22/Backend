@@ -1,0 +1,11 @@
+package com.example.demo;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "access_rights")
+public class accessRights {
+	private Integer id;
+	private Integer name;
+}

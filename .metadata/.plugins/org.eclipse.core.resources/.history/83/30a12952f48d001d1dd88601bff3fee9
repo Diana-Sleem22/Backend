@@ -1,0 +1,66 @@
+package com.example.demo;
+
+import java.sql.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "orders")
+public class orders {
+	public orders() {
+
+	}
+
+	public orders(Integer invoiceFK) {
+		this.invoiceFK = invoiceFK;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public invoiceAndOrder getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(invoiceAndOrder invoice) {
+		this.invoice = invoice;
+	}
+
+	public Integer getInvoiceFK() {
+		return invoiceFK;
+	}
+
+	public void setInvoiceFK(Integer invoiceFK) {
+		this.invoiceFK = invoiceFK;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@ManyToOne
+	@JoinColumn(name = "invoiceFK")
+	private invoiceAndOrder invoice;
+
+	@Column(name = "invoiceFK", insertable = false, updatable = false)
+	private Integer invoiceFK;
+
+	@Override
+	public String toString() {
+		return "{\"invoiceFK\":" + invoiceFK + "}";
+	}
+
+}

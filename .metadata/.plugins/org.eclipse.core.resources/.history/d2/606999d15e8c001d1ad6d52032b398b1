@@ -1,0 +1,56 @@
+package com.example.demo;
+
+import java.sql.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "orders")
+public class orders {
+	public orders() {
+
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(invoice invoice) {
+		this.invoice = invoice;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	private Integer invoiceFK;
+
+
+	@ManyToOne
+	@JoinColumn(name = "invoiceFK", insertable = false, updatable = false)
+	private invoice invoice;
+
+
+	public Integer getInvoiceFK() {
+		return invoiceFK;
+	}
+
+	public void setInvoiceFK(Integer invoiceFK) {
+		this.invoiceFK = invoiceFK;
+	}
+}

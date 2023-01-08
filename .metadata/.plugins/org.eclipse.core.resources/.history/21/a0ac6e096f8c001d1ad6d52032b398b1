@@ -1,0 +1,47 @@
+package com.example.demo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.apache.catalina.connector.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+
+public class orderItemsController {
+	@Autowired
+	private orderItemsRepository repository;
+
+	@PostMapping("/registerOrderItems")
+	@Transactional
+	public JSONArray registration(@RequestBody List<orderItems> items) {
+		repository.saveAll(items);
+		JSONObject json = new JSONObject();
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("orderItems", items);
+		JSONArray ja = new JSONArray();
+		ja.add(json);
+		return ja;
+
+	}
+
+	@GetMapping("/getOrderItems/{orderID}")
+	public List<orderInvoice> getOrders(@PathVariable("orderID") int orderID) {
+		List<orderInvoice> list = new ArrayList<orderInvoice>();
+		List<Object[]> list2 = repository.getOrderItems(orderID);
+
+		return list;
+
+	}
+
+}

@@ -1,0 +1,41 @@
+package com.example.demo;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface productsRepository extends JpaRepository<products, Integer> {
+	@Modifying
+	@Query(value = "INSERT INTO products(name, barcode, price, quantity, categoryFK, companyFK) VALUES(:name, :barcode, :price, :quantity, :categoryFK, :companyFK)", nativeQuery = true)
+	@Transactional
+	void addProduct(@Param("barcode") String barcode, @Param("name") String name, @Param("price") String price,
+			@Param("quantity") String quantity, @Param("companyFK") String compnayFK,
+			@Param("categoryFK") String categoryFK);
+
+	@Query("SELECT p.id,p.name, p.barcode,p.quantity, p.price,p.companyFK, p.categoryFK, ps.userFK from products p INNER JOIN productsSuppliers ps on ps.productFK=p.id")
+	List<Object[]> getAllProducts();
+
+	@Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
+	Integer getLastInsertId();
+
+	@Query("SELECT p.id,p.name, p.barcode,p.quantity, p.price,p.companyFK, p.categoryFK, ps.userFK from products p INNER JOIN productsSuppliers ps on ps.productFK=p.id where p.name LIKE :name% or p.barcode LIKE :name%")
+	List<Object[]> searchProducts(@Param("name") String name);
+
+	@Query("SELECT p.id,p.name, p.barcode,p.quantity, p.price,p.companyFK, p.categoryFK, ps.userFK from products p INNER JOIN productsSuppliers ps on ps.productFK=p.id where p.barcode LIKE :barcode%")
+	List<Object[]> searchProductsByBarCode(@Param("barcode") String barcode);
+
+	@Query("SELECT p.id,p.name, p.barcode,p.quantity, p.price,p.companyFK, p.categoryFK, ps.userFK from products p INNER JOIN productsSuppliers ps on ps.productFK=p.id where p.barcode =:barcode")
+	List<Object[]> searchProductsByExactBarCode(@Param("barcode") String barcode);
+
+	List<Object[]> findByNameLike(String name);
+
+	
+
+}

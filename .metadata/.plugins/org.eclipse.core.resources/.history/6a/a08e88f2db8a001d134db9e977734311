@@ -1,0 +1,50 @@
+package com.example.demo
+
+import java.util.List
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
+import javax.persistence.PrimaryKeyJoinColumn
+import javax.persistence.SecondaryTable
+import javax.persistence.Table
+
+@Entity @Table(name="roles_permissions") class rolePermissionsModel {
+	@Id @GeneratedValue(strategy=GenerationType.IDENTITY) Integer id
+	@OneToOne @JoinColumn(name="roleFK") Role role
+	@OneToOne @JoinColumn(name="accessRightFK") accessRights accessRight
+
+	new() {
+		super()
+	}
+
+	def Integer getId() {
+		return id
+	}
+
+	def void setId(Integer id) {
+		this.id = id
+	}
+
+	def Role getRole() {
+		return role
+	}
+
+	def void setRole(Role role) {
+		this.role = role
+	}
+
+	def accessRights getAccessRight() {
+		return accessRight
+	}
+
+	def void setAccessRight(accessRights accessRight) {
+		this.accessRight = accessRight
+	}
+}

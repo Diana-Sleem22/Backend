@@ -1,0 +1,129 @@
+package com.example.demo;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+import org.apache.catalina.connector.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class userController {
+	@Autowired
+	private userRepository repository;
+
+	 
+	@PostMapping("/registerUser")
+    public int registration(  @RequestBody user userDto ) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException{
+		 String input = userDto.getPassword();
+		    String salt = "12345678";
+
+		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+		    SecretKey key = CommonFunctions.getKeyFromPassword(input,salt);
+		    System.out.println(key);
+		    String algorithm = "AES/CBC/PKCS5Padding";
+
+		    String cipherText = CommonFunctions.encrypt(algorithm,input, key, ivParameterSpec);
+		    if(userDto.getPassword().equals("null")) {
+			    userDto.setPassword("");
+
+		    }
+		    else {
+			    userDto.setPassword(cipherText);
+
+		    }
+		repository.save(userDto);
+		return Response.SC_CREATED;
+                            
+}
+	 @DeleteMapping("/deleteUser/{id}")  
+	    private void deleteUser(@PathVariable("id") int userid) 
+	    {  
+	    repository.deleteById(userid);  
+	    }
+	 @PutMapping("/updateUser")  
+	    private int update(@RequestBody user userDto )   
+	    {  
+	    
+	    	repository.save( userDto);
+			return Response.SC_CREATED; 
+	    } 
+		@GetMapping("/getAllSuppliers")
+		
+		  public ResponseEntity<List<user>> getAllSuppliers(){
+			 List<user> suppliers = new ArrayList<user>();
+	          suppliers=repository.getAllSuppliers();
+	         
+             return ResponseEntity.ok(suppliers);
+	        
+	    
+}
+		@GetMapping("/getAllCustomers")
+		
+		  public ResponseEntity<List<user>> getAllCustomers(){
+			 List<user> customers= new ArrayList<user>();
+			 customers=repository.getAllCustomers();
+	         
+           return ResponseEntity.ok(customers);
+	        
+	    
+}
+	 @GetMapping("/loginUser/{email}/{password}/{roleFK}")
+	    public ResponseEntity<List<user>> loginUser(@PathVariable("email") String email, @PathVariable("password") String password, @PathVariable("roleFK") Integer roleFK) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException{
+	    	 List<user> userToLogin = new ArrayList<user>();
+	         if(email != null){
+	        	 String salt = "12345678";
+
+	 		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+	 		    SecretKey key = CommonFunctions.getKeyFromPassword(password,salt);
+			    System.out.println(key);
+
+	 		    String algorithm = "AES/CBC/PKCS5Padding";
+			    String cipherText = CommonFunctions.encrypt(algorithm,password, key, ivParameterSpec);
+
+
+	        	 userToLogin = repository.loginUser(email, cipherText, roleFK);
+	             if(userToLogin.isEmpty()){
+	                 return ResponseEntity.ok(userToLogin);
+	             }
+                 return ResponseEntity.ok(userToLogin);
+	         }
+             return ResponseEntity.ok(userToLogin);
+	        
+	 
+	    }
+	  @GetMapping("/searchUser/{firstname}")
+	    public ResponseEntity<List<user>> searchUser(@PathVariable("firstname") String userName){
+	    	 List<user> users = null;
+	         if(userName != null){
+	        	 users= repository.findByFirstNameLike("%"+userName+"%");
+	            
+	             return ResponseEntity.ok(users);
+	         }
+	 
+	         return ResponseEntity.ok(users);
+	    }
+
+}

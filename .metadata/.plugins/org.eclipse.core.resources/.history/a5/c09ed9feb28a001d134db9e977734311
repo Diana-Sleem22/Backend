@@ -1,0 +1,30 @@
+package com.example.demo;
+
+import java.util.List;
+
+import org.apache.catalina.connector.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+
+public class orderItemsController {
+	@Autowired
+	private orderItemsRepository repository;
+	
+	@PostMapping("/registerOrderItems")
+    public JSONArray registration(  @RequestBody List<orderItems> items ){
+		repository.saveAll(items);
+		JSONObject json = new JSONObject();
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("orderItems", items);
+		JSONArray ja = new JSONArray();
+		ja.add(json);
+		return ja ;
+                            
+}
+}

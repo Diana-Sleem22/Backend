@@ -1,0 +1,7 @@
+package com.example.demo;
+
+public class accessRightsRolesPermissionsModel {
+	private int id;
+	private int roleFK;
+	private int accessRightFK;
+}

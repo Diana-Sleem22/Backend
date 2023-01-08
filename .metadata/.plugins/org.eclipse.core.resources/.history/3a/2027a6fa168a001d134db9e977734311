@@ -1,0 +1,19 @@
+package com.example.demo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+
+public interface accessRightsRolesPermissionsRepository
+		extends JpaRepository<accessRightsRolesPermissionsModel, Integer> {
+	@Query("SELECT accessRight.name FROM RolePermission INNER JOIN Role ON RolePermission.role = Role.id INNER JOIN AccessRight ON RolePermission.accessRight = AccessRight.id WHERE Role.id = :roleId")
+	List<accessRightsRolesPermissionsModel> getAll(@Param("roleFK") Integer roleFK);
+}
