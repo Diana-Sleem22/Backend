@@ -3,6 +3,8 @@ package com.example.demo;
 import java.util.List;
 
 import org.apache.catalina.connector.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -22,40 +24,45 @@ public class companyController {
 	@Autowired
 	private companyRepository repository;
 
-	 
 	@PostMapping("/registerCompany")
-    public int registration(  @RequestBody company companyDto ){
+	public JSONArray registration(@RequestBody company companyDto) {
+		repository.save(companyDto);
+		JSONObject json = new JSONObject();
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("company", companyDto);
+		JSONArray ja = new JSONArray();
+		ja.add(json);
+		return ja;
+
+	}
+
+	@GetMapping("/getAllCompanies")
+	public List<company> getCompany() {
+		return repository.findAll();
+
+	}
+
+	@PutMapping("/updateCompany")
+	private int update(@RequestBody company companyDto) {
+
 		repository.save(companyDto);
 		return Response.SC_CREATED;
-                            
-}
-	
-	@GetMapping("/getAllCompanies")
-    public List<company> getCompany(){
-		return repository.findAll();
-                            
-}
-    @PutMapping("/updateCompany")  
-    private int update(@RequestBody company companyDto )   
-    {  
-    
-    	repository.save(companyDto);
-		return Response.SC_CREATED; 
-    }  
-    @DeleteMapping("/deleteCompany/{id}")  
-    private void deleteCompany(@PathVariable("id") int companyid) 
-    {  
-    repository.deleteById(companyid);  
-    }  
-    @GetMapping("/searchCompanies/{name}")
-    public ResponseEntity<List<company>> searchCompanies(@PathVariable("name") String companyName){
-    	 List<company> company = null;
-         if(companyName != null){
-             company= repository.findByNameLike("%"+companyName+"%");
-            
-             return ResponseEntity.ok(company);
-         }
- 
-         return ResponseEntity.ok(company);
-    }
+	}
+
+	@DeleteMapping("/deleteCompany/{id}")
+	private void deleteCompany(@PathVariable("id") int companyid) {
+		repository.deleteById(companyid);
+	}
+
+	@GetMapping("/searchCompanies/{name}")
+	public ResponseEntity<List<company>> searchCompanies(@PathVariable("name") String companyName) {
+		List<company> company = null;
+		if (companyName != null) {
+			company = repository.findByNameLike("%" + companyName + "%");
+
+			return ResponseEntity.ok(company);
+		}
+
+		return ResponseEntity.ok(company);
+	}
 }

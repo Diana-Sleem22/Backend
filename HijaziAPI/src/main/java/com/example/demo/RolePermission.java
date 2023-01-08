@@ -1,0 +1,68 @@
+package com.example.demo;
+
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "roles_permissions")
+public class RolePermission {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	@ManyToOne
+	@JoinColumn(name = "roleFK")
+	private Role role;
+
+	@Column(name = "roleFK", insertable = false, updatable = false)
+	private Integer roleFK;
+
+	@Column(name = "accessRightFK", insertable = false, updatable = false)
+	private Integer accessRightFK;
+
+	@ManyToOne
+	@JoinColumn(name = "accessRightFK")
+	private AccessRight accessRight;
+
+	public RolePermission() {
+		super();
+
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public AccessRight getAccessRight() {
+		return accessRight;
+	}
+
+	public void setAccessRight(AccessRight accessRight) {
+		this.accessRight = accessRight;
+	}
+
+}

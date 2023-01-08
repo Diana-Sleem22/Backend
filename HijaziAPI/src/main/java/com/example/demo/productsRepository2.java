@@ -1,0 +1,17 @@
+package com.example.demo;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface productsRepository2 extends JpaRepository<products2, Integer> {
+	@Modifying
+	@Query(value="UPDATE products p set p.quantity =:quantity, p.price =:price where p.id=:id", nativeQuery = true)
+	@Transactional
+	void updateProduct(@Param("id") Integer id, @Param("quantity") Integer quantity, @Param("price") Integer price);
+}

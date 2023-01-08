@@ -14,6 +14,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.catalina.connector.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -34,75 +36,166 @@ public class userController {
 	@Autowired
 	private userRepository repository;
 
-	 
 	@PostMapping("/registerUser")
-    public int registration(  @RequestBody user userDto ) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException{
-		 String input = userDto.getPassword();
-		    String salt = "12345678";
+	public JSONArray registration(@RequestBody user userDto) throws NoSuchAlgorithmException, InvalidKeyException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException,
+			InvalidKeySpecException {
+		JSONObject json = new JSONObject();
+		JSONArray ja = new JSONArray();
+		List<user> users = null;
+		if (userDto.getRoleFK() == 2) {
+			users = repository.getSuppliersByPhoneNumber(userDto.getPhoneNumber());
+		} else if (userDto.getRoleFK() == 4) {
+			users = repository.getCustomerByPhoneNumber(userDto.getPhoneNumber());
+		} else if (userDto.getRoleFK() == 3) {
+			users = repository.getSellerByEmail(userDto.getEmail());
+		} else if (userDto.getRoleFK() == 1) {
+			users = repository.getAdminByEmail(userDto.getEmail());
+		}
 
-		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
-		    SecretKey key = CommonFunctions.getKeyFromPassword(input,salt);
-		    System.out.println(key);
-		    String algorithm = "AES/CBC/PKCS5Padding";
+		if (users.size() != 0) {
+			json.put("responseCode", Response.SC_FOUND);
+			json.put("user", userDto);
+			ja.add(json);
+			return ja;
+		} else {
+			String input = userDto.getPassword();
+			String salt = "12345678";
 
-		    String cipherText = CommonFunctions.encrypt(algorithm,input, key, ivParameterSpec);
-		    if(userDto.getPassword().equals("null")) {
-			    userDto.setPassword("");
+			IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+			SecretKey key = CommonFunctions.getKeyFromPassword(input, salt);
+			String algorithm = "AES/CBC/PKCS5Padding";
 
-		    }
-		    else {
-			    userDto.setPassword(cipherText);
+			String cipherText = CommonFunctions.encrypt(algorithm, input, key, ivParameterSpec);
+			if (userDto.getPassword().equals("null")) {
+				userDto.setPassword("");
 
-		    }
-		repository.save(userDto);
-		return Response.SC_CREATED;
-                            
-}
-	 @DeleteMapping("/deleteUser/{id}")  
-	    private void deleteUser(@PathVariable("id") int userid) 
-	    {  
-	    repository.deleteById(userid);  
-	    }
-	 @PutMapping("/updateUser")  
-	    private int update(@RequestBody user userDto )   
-	    {  
-	    
-	    	repository.save( userDto);
-			return Response.SC_CREATED; 
-	    } 
-		@GetMapping("/getAllSuppliers")
-		
-		  public ResponseEntity<List<user>> getAllSuppliers(){
-			 List<user> suppliers = new ArrayList<user>();
-	          suppliers=repository.getAllSuppliers();
-	         
-             return ResponseEntity.ok(suppliers);
-	        
-	    
-}
-	 @GetMapping("/loginUser/{email}/{password}/{roleFK}")
-	    public ResponseEntity<List<user>> loginUser(@PathVariable("email") String email, @PathVariable("password") String password, @PathVariable("roleFK") Integer roleFK) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException{
-	    	 List<user> userToLogin = new ArrayList<user>();
-	         if(email != null){
-	        	 String salt = "12345678";
+			} else {
+				userDto.setPassword(cipherText);
 
-	 		    IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
-	 		    SecretKey key = CommonFunctions.getKeyFromPassword(password,salt);
-			    System.out.println(key);
+			}
+			repository.save(userDto);
 
-	 		    String algorithm = "AES/CBC/PKCS5Padding";
-			    String cipherText = CommonFunctions.encrypt(algorithm,password, key, ivParameterSpec);
+			json.put("responseCode", Response.SC_CREATED);
+			json.put("user", userDto);
+			ja.add(json);
 
+			return ja;
+		}
 
-	        	 userToLogin = repository.loginUser(email, cipherText, roleFK);
-	             if(userToLogin.isEmpty()){
-	                 return ResponseEntity.ok(userToLogin);
-	             }
-                 return ResponseEntity.ok(userToLogin);
-	         }
-             return ResponseEntity.ok(userToLogin);
-	        
-	 
-	    }
-	
+	}
+
+	@DeleteMapping("/deleteUser/{id}")
+	private void deleteUser(@PathVariable("id") int userid) {
+		repository.deleteById(userid);
+	}
+
+	@PutMapping("/updateUser")
+	private JSONArray update(@RequestBody user userDto) {
+		JSONObject json = new JSONObject();
+		JSONArray ja = new JSONArray();
+		List<user> users = null;
+		if (userDto.getRoleFK() == 2) {
+			users = repository.getSuppliersByPhoneNumber(userDto.getPhoneNumber());
+		} else if (userDto.getRoleFK() == 4) {
+			users = repository.getCustomerByPhoneNumber(userDto.getPhoneNumber());
+		} else if (userDto.getRoleFK() == 3) {
+			users = repository.getSellerByEmail(userDto.getEmail());
+		} else if (userDto.getRoleFK() == 1) {
+			users = repository.getAdminByEmail(userDto.getEmail());
+		}
+		if (users.size() != 0) {
+			json.put("responseCode", Response.SC_FOUND);
+			json.put("user", userDto);
+			ja.add(json);
+			return ja;
+		} else {
+
+			repository.save(userDto);
+			json.put("responseCode", Response.SC_CREATED);
+			json.put("user", userDto);
+			ja.add(json);
+			return ja;
+		}
+
+	}
+
+	@GetMapping("/getAllSuppliers")
+
+	public ResponseEntity<List<user>> getAllSuppliers() {
+		List<user> suppliers = new ArrayList<user>();
+		suppliers = repository.getAllSuppliers();
+
+		return ResponseEntity.ok(suppliers);
+
+	}
+
+	@GetMapping("/getAllCustomers")
+
+	public ResponseEntity<List<user>> getAllCustomers() {
+		List<user> customers = new ArrayList<user>();
+		customers = repository.getAllCustomers();
+
+		return ResponseEntity.ok(customers);
+
+	}
+
+	@GetMapping("/loginUser/{email}/{password}/{roleFK}")
+	public JSONArray loginUser(@PathVariable("email") String email, @PathVariable("password") String password,
+			@PathVariable("roleFK") Integer roleFK)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+		List<user> userToLogin = new ArrayList<user>();
+		JSONObject json = new JSONObject();
+		JSONArray ja = new JSONArray();
+		if (email != null) {
+			String salt = "12345678";
+
+			IvParameterSpec ivParameterSpec = CommonFunctions.generateIv();
+			SecretKey key = CommonFunctions.getKeyFromPassword(password, salt);
+			System.out.println(key);
+
+			String algorithm = "AES/CBC/PKCS5Padding";
+			String cipherText = CommonFunctions.encrypt(algorithm, password, key, ivParameterSpec);
+
+			userToLogin = repository.loginUser(email, cipherText, roleFK);
+			if (userToLogin.isEmpty()) {
+				json.put("responseCode", Response.SC_NOT_FOUND);
+				json.put("user", userToLogin);
+				ja.add(json);
+				return ja;
+			}
+
+		}
+		json.put("responseCode", Response.SC_CREATED);
+		json.put("user", userToLogin.get(0));
+		ja.add(json);
+		return ja;
+
+	}
+
+	@GetMapping("/searchCustomer/{firstname}")
+	public ResponseEntity<List<user>> searchCustomer(@PathVariable("firstname") String firstname) {
+		List<user> users = null;
+		if (firstname != null) {
+			users = repository.searchCustomer("%" + firstname + "%");
+
+			return ResponseEntity.ok(users);
+		}
+
+		return ResponseEntity.ok(users);
+	}
+
+	@GetMapping("/searchSupplier/{firstname}")
+	public ResponseEntity<List<user>> searchSupplier(@PathVariable("firstname") String firstname) {
+		List<user> users = null;
+		if (firstname != null) {
+			users = repository.searchSupplier("%" + firstname + "%");
+
+			return ResponseEntity.ok(users);
+		}
+
+		return ResponseEntity.ok(users);
+	}
+
 }

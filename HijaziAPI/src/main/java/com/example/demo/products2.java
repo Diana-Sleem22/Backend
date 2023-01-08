@@ -18,8 +18,8 @@ import org.hibernate.annotations.ManyToAny;
 
 @Entity
 @Table(name = "products")
-public class products {
-	public products() {
+public class products2 {
+	public products2() {
 
 	}
 
@@ -32,19 +32,8 @@ public class products {
 	private Integer price;
 	private Integer companyFK;
 	private Integer categoryFK;
-	private Integer supplierFK;
 
-	@OneToOne
-	@JoinColumn(name = "productFK", insertable = false, updatable = false)
-	productsSuppliers ps;
-
-	public Integer getSupplierFK() {
-		return supplierFK;
-	}
-
-	public void setSupplierFK(Integer supplierFK) {
-		this.supplierFK = supplierFK;
-	}
+	
 
 //	public productsSuppliers getPs() {
 //		return ps;
@@ -110,18 +99,9 @@ public class products {
 		this.categoryFK = categoryFK;
 	}
 
-	public products(Integer id, String name, String barcode, Integer quantity, Integer price, Integer companyFK,
-			Integer categoryFK, Integer supplierFK) {
-		this.id = id;
-		this.name = name;
-		this.barcode = barcode;
-		this.quantity = quantity;
-		this.price = price;
-		this.companyFK = companyFK;
-		this.categoryFK = categoryFK;
-		this.supplierFK = supplierFK;
-	}
-	public products(Integer id, String name, String barcode, Integer quantity, Integer price, Integer companyFK,
+	
+
+	public products2(Integer id, String name, String barcode, Integer quantity, Integer price, Integer companyFK,
 			Integer categoryFK) {
 		this.id = id;
 		this.name = name;
@@ -131,7 +111,8 @@ public class products {
 		this.companyFK = companyFK;
 		this.categoryFK = categoryFK;
 	}
-	public products(String name, String barcode, Integer quantity, Integer price, Integer companyFK,
+
+	public products2(String name, String barcode, Integer quantity, Integer price, Integer companyFK,
 			Integer categoryFK) {
 		this.name = name;
 		this.barcode = barcode;
@@ -143,18 +124,8 @@ public class products {
 
 	@Override
 	public String toString() {
-		return "{\"id\":" + id + ",\"supplierFK\":" + ps.getUserFK() + ",\"name\":\"" + name + "\", \"barcode\":\""
-				+ barcode + "\", \"quantity\":" + quantity + ", \"price\":" + price + ", \"companyFK\":" + companyFK
-				+ ", \"categoryFK\":" + categoryFK + "}";
-	}
-	
-
-	public String toString2() {
 		return "{\"id\":" + id + ",\"name\":\"" + name + "\", \"barcode\":\"" + barcode + "\", \"quantity\":" + quantity
 				+ ", \"price\":" + price + ", \"companyFK\":" + companyFK + ", \"categoryFK\":" + categoryFK + "}";
 	}
-
-
-	
 
 }
